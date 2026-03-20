@@ -8,10 +8,14 @@ import { usePRs } from "./hooks/usePRs";
 import PRList from "./screens/PRList";
 import { useKeymap } from "./hooks/useKeymap";
 import PRDetail from "./screens/PRDetail";
+import { useDiff } from "./hooks/useDiff";
+import DiffViewer from "./screens/DiffViewer";
 
 type AppState = "loading" | "auth" | "list";
 
 export default function App() {
+  const [screen, setScreen] = useState<"list" | "diff">("list");
+  const [fileIndex, setFileIndex] = useState(0);
   const [appState, setAppState] = useState<AppState>("loading");
   const [token, setToken] = useState("");
   const [repo, setRepo] = useState<{ owner: string; repo: string } | null>(
@@ -23,10 +27,28 @@ export default function App() {
     repo?.repo ?? ""
   );
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const selectedPR = prs[selectedIndex] ?? null;
+  const { files, loading: diffLoading } = useDiff(
+    token,
+    repo?.owner ?? "",
+    repo?.repo ?? "",
+    screen === "diff" ? selectedPR?.number ?? null : null
+  );
   useKeymap({
-    onUp: () => setSelectedIndex((i) => Math.max(0, i - 1)),
-    onDown: () => setSelectedIndex((i) => Math.min(prs.length - 1, i + 1)),
-    onSelect: () => {},
+    onUp: () => {
+      if (screen === "list") setSelectedIndex((i) => Math.max(0, i - 1));
+    },
+    onDown: () => {
+      if (screen === "list")
+        setSelectedIndex((i) => Math.min(prs.length - 1, i + 1));
+    },
+    onSelect: () => {
+      if (screen === "list") {
+        setScreen("diff");
+        setFileIndex(0);
+      }
+    },
     onQuit: () => process.exit(0),
   });
 
@@ -99,7 +121,15 @@ export default function App() {
           borderColor="gray"
           flexDirection="column"
         >
-          <PRDetail pr={prs[selectedIndex] ?? null} />
+          {screen === "diff" ? (
+            <DiffViewer
+              files={files}
+              loading={diffLoading}
+              fileIndex={fileIndex}
+            />
+          ) : (
+            <PRDetail pr={selectedPR} />
+          )}
         </Box>
       </Box>
 

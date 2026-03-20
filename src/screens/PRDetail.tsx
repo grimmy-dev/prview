@@ -8,7 +8,9 @@ interface Props {
 
 function timeAgo(date: string): string {
   const diff = Date.now() - new Date(date).getTime();
-  const hours = Math.floor(diff / 1000 / 60 / 60);
+  const minutes = Math.floor(diff / 1000 / 60);
+  if (minutes < 60) return minutes < 2 ? "just now" : `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
   if (hours < 24) return `${hours}h ago`;
   const days = Math.floor(hours / 24);
   return `${days}d ago`;
@@ -25,9 +27,12 @@ export default function PRDetail({ pr }: Props) {
 
   return (
     <Box flexDirection="column" padding={1} gap={1}>
-      <Text bold color="white">
-        {pr.title}
-      </Text>
+      <Box gap={1}>
+        <Text color="gray">#{pr.number}</Text>
+        <Text bold color="white">
+          {pr.title}
+        </Text>
+      </Box>
       <Text color="gray">
         by <Text color="cyan">{pr.user.login}</Text>
         {"  "}
