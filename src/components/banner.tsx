@@ -9,12 +9,12 @@ const banner = figlet.textSync("prview", {
 const lines = banner.split("\n");
 
 const colors = [
-  "#00C853",
-  "#00FF87",
-  "#00E676",
-  "#69F0AE",
-  "#00BFA5",
-  "#1DE9B6",
+  "#00FF94",
+  "#00F080",
+  "#00DC6E",
+  "#00C85C",
+  "#00B44A",
+  "#00A038",
 ];
 
 export default function Banner() {

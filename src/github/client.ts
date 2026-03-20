@@ -1,4 +1,4 @@
-import type { PR, DiffFile, GithubUser, CIStatus } from "./types.ts";
+import type { PR, DiffFile, GithubUser, CIStatus, Comment } from "./types.ts";
 
 const BASE = "https://api.github.com";
 
@@ -76,4 +76,16 @@ export async function submitReview(
     method: "POST",
     body: JSON.stringify({ event, body }),
   });
+}
+
+export async function getPRComments(
+  token: string,
+  owner: string,
+  repo: string,
+  prNumber: number
+): Promise<Comment[]> {
+  return request<Comment[]>(
+    `/repos/${owner}/${repo}/pulls/${prNumber}/comments`,
+    token
+  );
 }

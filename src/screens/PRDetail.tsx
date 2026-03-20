@@ -46,6 +46,9 @@ export default function PRDetail({ pr }: Props) {
         <Text color="gray">
           head: <Text color="white">{pr.head.ref}</Text>
         </Text>
+        <Text color="gray">
+          changed: <Text color="yellow">{pr.changed_files ?? "?"} files</Text>
+        </Text>
       </Box>
 
       {pr.draft && <Text color="yellow">⚠ draft PR</Text>}
