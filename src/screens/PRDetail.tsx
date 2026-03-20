@@ -25,9 +25,12 @@ export default function PRDetail({ pr }: Props) {
 
   return (
     <Box flexDirection="column" padding={1} gap={1}>
-      <Text bold color="white">
-        {pr.title}
-      </Text>
+      <Box gap={1}>
+        <Text color="gray">#{pr.number}</Text>
+        <Text bold color="white">
+          {pr.title}
+        </Text>
+      </Box>
       <Text color="gray">
         by <Text color="cyan">{pr.user.login}</Text>
         {"  "}
