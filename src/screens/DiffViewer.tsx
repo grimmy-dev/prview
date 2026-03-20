@@ -9,62 +9,84 @@ interface Props {
   scrollOffset: number;
 }
 
-const VISIBLE_LINES = 15;
+export const VISIBLE_LINES = 15;
 
 function renderPatch(patch: string, scrollOffset: number) {
   const allLines = patch.split("\n");
+  const totalLines = allLines.length;
   const visible = allLines.slice(scrollOffset, scrollOffset + VISIBLE_LINES);
 
   return visible.map((line, i) => {
     const lineNum = scrollOffset + i + 1;
     const truncated = line.length > 80 ? line.slice(0, 80) + "…" : line;
+    const lineNumStr = String(lineNum).padStart(4);
 
     if (line.startsWith("+") && !line.startsWith("+++")) {
       return (
         <Box key={i}>
-          <Text color="gray">{String(lineNum).padStart(4)} </Text>
-          <Text color="green">{truncated}</Text>
+          <Text backgroundColor="green" color="black">
+            {lineNumStr}
+          </Text>
+          <Text> </Text>
+          <Text backgroundColor="green" color="black">
+            {truncated.padEnd(80)}
+          </Text>
         </Box>
       );
     }
+
     if (line.startsWith("-") && !line.startsWith("---")) {
       return (
         <Box key={i}>
-          <Text color="gray">{String(lineNum).padStart(4)} </Text>
-          <Text color="red">{truncated}</Text>
+          <Text backgroundColor="red" color="white">
+            {lineNumStr}
+          </Text>
+          <Text> </Text>
+          <Text backgroundColor="red" color="white">
+            {truncated.padEnd(80)}
+          </Text>
         </Box>
       );
     }
+
     if (line.startsWith("@@")) {
-      const truncated = line.length > 40 ? line.slice(0, 40) + "…" : line;
+      const short = line.length > 40 ? line.slice(0, 40) + "…" : line;
       return (
         <Box key={i}>
-          <Text color="gray">{String(lineNum).padStart(4)} </Text>
-          <Text color="cyan">{truncated}</Text>
+          <Text color="gray">{lineNumStr}</Text>
+          <Text> </Text>
+          <Text color="cyan" dimColor>
+            {short}
+          </Text>
         </Box>
       );
     }
+
     return (
       <Box key={i}>
-        <Text color="gray">{String(lineNum).padStart(4)} </Text>
+        <Text color="gray">{lineNumStr}</Text>
+        <Text> </Text>
         <Text color="gray">{truncated}</Text>
       </Box>
     );
   });
 }
 
-function fileStatusColor(status: DiffFile["status"]): string {
+function fileStatusBadge(status: DiffFile["status"]): {
+  label: string;
+  color: string;
+} {
   switch (status) {
     case "added":
-      return "green";
+      return { label: "ADDED", color: "green" };
     case "removed":
-      return "red";
+      return { label: "REMOVED", color: "red" };
     case "modified":
-      return "yellow";
+      return { label: "MODIFIED", color: "yellow" };
     case "renamed":
-      return "cyan";
+      return { label: "RENAMED", color: "cyan" };
     default:
-      return "white";
+      return { label: "CHANGED", color: "white" };
   }
 }
 
@@ -96,53 +118,54 @@ export default function DiffViewer({
   const totalLines = file.patch?.split("\n").length ?? 0;
   const canScrollDown = scrollOffset + VISIBLE_LINES < totalLines;
   const canScrollUp = scrollOffset > 0;
+  const badge = fileStatusBadge(file.status);
 
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box flexDirection="column" padding={1} gap={1}>
       {/* file tabs */}
-      <Box gap={1} marginBottom={1} flexWrap="wrap">
+      <Box gap={1} flexWrap="wrap">
         {files.map((f, i) => (
-          <Box key={i}>
-            <Text
-              color={i === fileIndex ? "cyan" : "gray"}
-              bold={i === fileIndex}
-            >
-              {i === fileIndex ? "[ " : "  "}
-              {f.filename.split("/").pop()}
-              {i === fileIndex ? " ]" : "  "}
-            </Text>
-          </Box>
+          <Text
+            key={i}
+            color={i === fileIndex ? "black" : "gray"}
+            backgroundColor={i === fileIndex ? "cyan" : undefined}
+            bold={i === fileIndex}
+          >
+            {" "}
+            {f.filename.split("/").pop()}{" "}
+          </Text>
         ))}
       </Box>
 
       {/* file header */}
-      <Box
-        borderStyle="single"
-        borderColor="gray"
-        paddingX={1}
-        marginBottom={1}
-        gap={2}
-      >
-        <Text color={fileStatusColor(file.status)} bold>
-          {file.status.toUpperCase()}
+      <Box gap={2} alignItems="center">
+        <Text backgroundColor={badge.color} color="black" bold>
+          {" "}
+          {badge.label}{" "}
         </Text>
         <Text color="white">{file.filename}</Text>
-        <Text color="green">+{file.additions}</Text>
-        <Text color="red">-{file.deletions}</Text>
-        <Text color="gray">
+        <Text color="green" bold>
+          +{file.additions}
+        </Text>
+        <Text color="red" bold>
+          -{file.deletions}
+        </Text>
+        <Text color="gray" dimColor>
           {fileIndex + 1}/{files.length} files
         </Text>
       </Box>
 
-      {/* scroll indicator top */}
-      {canScrollUp && (
+      {/* scroll up indicator */}
+      {canScrollUp ? (
         <Text color="gray" dimColor>
           {" "}
           ↑ more above
         </Text>
+      ) : (
+        <Text> </Text>
       )}
 
-      {/* patch */}
+      {/* patch lines */}
       <Box flexDirection="column">
         {file.patch ? (
           renderPatch(file.patch, scrollOffset)
@@ -151,12 +174,14 @@ export default function DiffViewer({
         )}
       </Box>
 
-      {/* scroll indicator bottom */}
-      {canScrollDown && (
+      {/* scroll down indicator */}
+      {canScrollDown ? (
         <Text color="gray" dimColor>
           {" "}
-          ↓ more below ({totalLines - scrollOffset - VISIBLE_LINES} lines)
+          ↓ {totalLines - scrollOffset - VISIBLE_LINES} more lines below
         </Text>
+      ) : (
+        <Text> </Text>
       )}
     </Box>
   );

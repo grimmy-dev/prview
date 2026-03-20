@@ -9,12 +9,11 @@ import PRList from "./screens/PRList";
 import { useKeymap } from "./hooks/useKeymap";
 import PRDetail from "./screens/PRDetail";
 import { useDiff } from "./hooks/useDiff";
-import DiffViewer from "./screens/DiffViewer";
+import DiffViewer, { VISIBLE_LINES } from "./screens/DiffViewer";
 import ReviewScreen from "./screens/ReviewScreen";
 
 type AppState = "loading" | "auth" | "list" | "error";
 type Screen = "list" | "diff" | "review" | "error";
-const VISIBLE_LINES = 15;
 
 export default function App() {
   const [fileIndex, setFileIndex] = useState(0);
@@ -92,6 +91,7 @@ export default function App() {
         );
       }
     },
+
     onApprove: () => {
       if (screen === "list" || screen === "diff") {
         setReviewMode("approve");
