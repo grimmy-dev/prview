@@ -27,27 +27,23 @@ export default function PRDetail({ pr }: Props) {
 
   return (
     <Box flexDirection="column" padding={1} gap={1}>
+      {/* title */}
       <Box gap={1}>
         <Text color="gray">#{pr.number}</Text>
         <Text bold color="white">
           {pr.title}
         </Text>
       </Box>
+
+      {/* meta */}
       <Text color="gray">
         by <Text color="cyan">{pr.user.login}</Text>
         {"  "}
         {timeAgo(pr.created_at)}
       </Text>
-      {pr.body && (
-        <Box marginTop={1} flexDirection="column">
-          <Text color="gray">────────────────────────────</Text>
-          <Text color="gray" wrap="wrap">
-            {pr.body}
-          </Text>
-        </Box>
-      )}
 
-      <Box gap={2} marginTop={1}>
+      {/* branches */}
+      <Box gap={2}>
         <Text color="gray">
           base: <Text color="white">{pr.base.ref}</Text>
         </Text>
@@ -56,7 +52,27 @@ export default function PRDetail({ pr }: Props) {
         </Text>
       </Box>
 
+      {/* draft badge */}
       {pr.draft && <Text color="yellow">⚠ draft PR</Text>}
+
+      {/* divider */}
+      <Text color="gray">────────────────────────────</Text>
+
+      {/* body */}
+      {pr.body ? (
+        <Box flexDirection="column" gap={1}>
+          <Text color="gray" dimColor>
+            description
+          </Text>
+          <Text color="white" wrap="wrap">
+            {pr.body}
+          </Text>
+        </Box>
+      ) : (
+        <Text color="gray" dimColor>
+          no description provided
+        </Text>
+      )}
     </Box>
   );
 }
