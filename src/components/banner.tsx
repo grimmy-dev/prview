@@ -6,7 +6,7 @@ const banner = figlet.textSync("prview", {
   font: "ANSI Shadow",
 });
 
-const lines = banner.split("\n");
+const lines = banner.split("\n").filter((line) => line.trim() !== "");
 
 const colors = [
   "#00FF94",
@@ -19,7 +19,7 @@ const colors = [
 
 export default function Banner() {
   return (
-    <Box flexDirection="column" alignItems="center" paddingY={1}>
+    <Box flexDirection="column" alignItems="flex-start">
       {lines.map((line, i) => (
         <Text key={i} color={colors[i % colors.length]}>
           {line}

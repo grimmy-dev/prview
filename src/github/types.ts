@@ -6,12 +6,12 @@ export interface GithubUser {
 export interface PR {
   number: number;
   title: string;
+  body: string | null;
   user: GithubUser;
   created_at: string;
   head: { ref: string };
   base: { ref: string };
   draft: boolean;
-  reviews_count?: number;
   changed_files?: number;
 }
 

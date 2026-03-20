@@ -38,6 +38,14 @@ export default function PRDetail({ pr }: Props) {
         {"  "}
         {timeAgo(pr.created_at)}
       </Text>
+      {pr.body && (
+        <Box marginTop={1} flexDirection="column">
+          <Text color="gray">────────────────────────────</Text>
+          <Text color="gray" wrap="wrap">
+            {pr.body}
+          </Text>
+        </Box>
+      )}
 
       <Box gap={2} marginTop={1}>
         <Text color="gray">
@@ -45,9 +53,6 @@ export default function PRDetail({ pr }: Props) {
         </Text>
         <Text color="gray">
           head: <Text color="white">{pr.head.ref}</Text>
-        </Text>
-        <Text color="gray">
-          changed: <Text color="yellow">{pr.changed_files ?? "?"} files</Text>
         </Text>
       </Box>
 

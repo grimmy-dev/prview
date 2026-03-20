@@ -39,6 +39,15 @@ export async function getPRs(
   );
 }
 
+export async function getPR(
+  token: string,
+  owner: string,
+  repo: string,
+  prNumber: number
+): Promise<PR> {
+  return request<PR>(`/repos/${owner}/${repo}/pulls/${prNumber}`, token);
+}
+
 export async function getPRFiles(
   token: string,
   owner: string,
