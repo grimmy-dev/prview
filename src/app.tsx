@@ -4,6 +4,10 @@ import { readConfig } from "./auth/config";
 import AuthSetup from "./auth/setup";
 import { detectRepo } from "./github/repo";
 import Banner from "./components/banner";
+import { usePRs } from "./hooks/usePRs";
+import PRList from "./screens/PRList";
+import { useKeymap } from "./hooks/useKeymap";
+import PRDetail from "./screens/PRDetail";
 
 type AppState = "loading" | "auth" | "list";
 
@@ -13,6 +17,18 @@ export default function App() {
   const [repo, setRepo] = useState<{ owner: string; repo: string } | null>(
     null
   );
+  const { prs, loading, error } = usePRs(
+    token,
+    repo?.owner ?? "",
+    repo?.repo ?? ""
+  );
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  useKeymap({
+    onUp: () => setSelectedIndex((i) => Math.max(0, i - 1)),
+    onDown: () => setSelectedIndex((i) => Math.min(prs.length - 1, i + 1)),
+    onSelect: () => {},
+    onQuit: () => process.exit(0),
+  });
 
   useEffect(() => {
     const config = readConfig();
@@ -68,6 +84,12 @@ export default function App() {
           <Text bold color="white">
             OPEN PRS
           </Text>
+          <PRList
+            prs={prs}
+            loading={loading}
+            error={error}
+            selectedIndex={selectedIndex}
+          />
         </Box>
 
         {/* right — PR detail */}
@@ -76,9 +98,8 @@ export default function App() {
           borderStyle="single"
           borderColor="gray"
           flexDirection="column"
-          paddingX={1}
         >
-          <Text color="gray">select a PR to view details</Text>
+          <PRDetail pr={prs[selectedIndex] ?? null} />
         </Box>
       </Box>
 
