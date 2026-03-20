@@ -3,6 +3,7 @@ import { Box, Text } from "ink";
 import { readConfig } from "./auth/config";
 import AuthSetup from "./auth/setup";
 import { detectRepo } from "./github/repo";
+import Banner from "./components/banner";
 
 type AppState = "loading" | "auth" | "list";
 
@@ -44,18 +45,14 @@ export default function App() {
   return (
     <Box flexDirection="column" height={24}>
       {/* header */}
-      <Box
-        justifyContent="space-between"
-        paddingX={1}
-        borderStyle="single"
-        borderColor="cyan"
-      >
-        <Text bold color="cyan">
-          prview
-        </Text>
-        <Text color="gray">
-          {repo ? `${repo.owner}/${repo.repo}` : "no repo detected"}
-        </Text>
+      <Box width={50} flexDirection="column">
+        <Banner />
+        <Box justifyContent="space-between" paddingX={1}>
+          <Text color="gray">
+            {repo ? `${repo.owner}/${repo.repo}` : "no repo detected"}
+          </Text>
+          <Text color="gray">v0.0.1</Text>
+        </Box>
       </Box>
 
       {/* main panels */}
