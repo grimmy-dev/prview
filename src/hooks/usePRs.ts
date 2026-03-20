@@ -26,7 +26,17 @@ export function usePRs(
         setLoading(false);
       })
       .catch((err: Error) => {
-        setError(err.message);
+        if (err.message.includes("401")) {
+          setError(
+            "invalid token. delete ~/.prview/config.json and run prview again."
+          );
+        } else if (err.message.includes("404")) {
+          setError("repo not found. check your github remote.");
+        } else if (err.message.includes("403")) {
+          setError("access forbidden. check your token has repo scope.");
+        } else {
+          setError(err.message);
+        }
         setLoading(false);
       });
   }, [token, owner, repo]);
