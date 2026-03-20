@@ -98,3 +98,22 @@ export async function getPRComments(
     token
   );
 }
+
+export async function getFileContent(
+  token: string,
+  owner: string,
+  repo: string,
+  path: string,
+  ref: string
+): Promise<string> {
+  const data = await request<{ content: string; encoding: string }>(
+    `/repos/${owner}/${repo}/contents/${path}?ref=${ref}`,
+    token
+  );
+  if (data.encoding === "base64") {
+    return Buffer.from(data.content.replace(/\n/g, ""), "base64").toString(
+      "utf-8"
+    );
+  }
+  return data.content;
+}

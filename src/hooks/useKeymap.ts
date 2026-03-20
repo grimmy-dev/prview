@@ -10,6 +10,7 @@ interface Actions {
   onBack: () => void;
   onApprove: () => void;
   onReject: () => void;
+  onViewFile: () => void;
   onQuit: () => void;
 }
 
@@ -25,6 +26,7 @@ export function useKeymap(actions: Actions) {
     if (input === "r") actions.onReject();
     if (input === "j") actions.onScrollDown();
     if (input === "k") actions.onScrollUp();
+    if (input === "v") actions.onViewFile();
     if (key.upArrow) actions.onUp();
     if (key.downArrow) actions.onDown();
     if (key.leftArrow) actions.onLeft();
