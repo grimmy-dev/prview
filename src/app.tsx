@@ -12,8 +12,8 @@ import { useDiff } from "./hooks/useDiff";
 import DiffViewer from "./screens/DiffViewer";
 import ReviewScreen from "./screens/ReviewScreen";
 
-type AppState = "loading" | "auth" | "list";
-type Screen = "list" | "diff" | "review";
+type AppState = "loading" | "auth" | "list" | "error";
+type Screen = "list" | "diff" | "review" | "error";
 const VISIBLE_LINES = 15;
 
 export default function App() {
@@ -32,6 +32,7 @@ export default function App() {
   );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const selectedPR = prs[selectedIndex] ?? null;
   const { files, loading: diffLoading } = useDiff(
@@ -111,6 +112,13 @@ export default function App() {
     if (config) {
       setToken(config.token);
       detectRepo().then((r) => {
+        if (!r) {
+          setErrorMessage(
+            "no github repo detected. run prview inside a git repo with a github remote."
+          );
+          setAppState("error");
+          return;
+        }
         setRepo(r);
         setAppState("list");
       });
@@ -121,6 +129,21 @@ export default function App() {
 
   if (appState === "loading") {
     return <Text color="gray">loading...</Text>;
+  }
+
+  if (appState === "error") {
+    return (
+      <Box flexDirection="column" padding={2} gap={1}>
+        <Text bold color="red">
+          ✗ error
+        </Text>
+        <Text color="gray">────────────────────────────</Text>
+        <Text color="white">{errorMessage}</Text>
+        <Text color="gray" dimColor>
+          press q to quit
+        </Text>
+      </Box>
+    );
   }
 
   if (appState === "auth") {
