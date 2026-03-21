@@ -103,4 +103,5 @@ bun remove -g prview
 
 ## license
 
-MIT
+[MIT](./LICENSE)
+
