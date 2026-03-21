@@ -1,16 +1,35 @@
 {
   "name": "prview",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "terminal UI for reviewing GitHub PRs without leaving your terminal",
   "module": "src/index.tsx",
   "bin": {
     "prview": "./run.ts"
   },
   "type": "module",
-  "private": true,
+  "keywords": [
+    "github",
+    "pull-request",
+    "terminal",
+    "tui",
+    "cli",
+    "ink",
+    "pr-review"
+  ],
+  "author": "Grimmy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grimmy-dev/prview"
+  },
+  "homepage": "https://github.com/grimmy-dev/prview",
+  "files": [
+    "src",
+    "run.ts",
+    "README.md"
+  ],
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/figlet": "^1.7.0",
-    "@types/ink-text-input": "^2.0.5",
     "@types/react": "^19.2.14"
   },
   "peerDependencies": {
@@ -18,11 +37,11 @@
   },
   "dependencies": {
     "cli-highlight": "^2.1.11",
-    "figlet": "^1.11.0",
+    "figlet": "^1.8.0",
     "ink": "^6.8.0",
     "ink-text-input": "^6.0.0",
-    "open": "^11.0.0",
+    "open": "^10.1.0",
     "react": "^19.2.4",
-    "simple-git": "^3.33.0"
+    "simple-git": "^3.27.0"
   }
 }
