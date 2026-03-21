@@ -117,3 +117,25 @@ export async function getFileContent(
   }
   return data.content;
 }
+
+export async function submitLineComment(
+  token: string,
+  owner: string,
+  repo: string,
+  prNumber: number,
+  body: string,
+  commitId: string,
+  path: string,
+  line: number
+): Promise<void> {
+  await request(`/repos/${owner}/${repo}/pulls/${prNumber}/comments`, token, {
+    method: "POST",
+    body: JSON.stringify({
+      body,
+      commit_id: commitId,
+      path,
+      line,
+      side: "RIGHT",
+    }),
+  });
+}
