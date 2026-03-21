@@ -7,13 +7,13 @@ A terminal UI for reviewing GitHub PRs without leaving your terminal. Browse ope
 ## install
 
 ```bash
-bun install -g prview
+bun install -g @grimmy-dev/prview
 ```
 
 or run directly with bun:
 
 ```bash
-bunx prview
+bunx @grimmy-dev/prview
 ```
 
 ## setup
