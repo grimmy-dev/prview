@@ -13,9 +13,10 @@ import DiffViewer from "./screens/DiffViewer.tsx";
 import ReviewScreen from "./screens/ReviewScreen.tsx";
 import { useFileContent } from "./hooks/useFileContent.ts";
 import FileViewer from "./screens/FileViewer.tsx";
+import CommentInput from "./screens/CommentInput.tsx";
 
 type AppState = "loading" | "auth" | "list" | "error";
-type Screen = "list" | "diff" | "review" | "file";
+type Screen = "list" | "diff" | "review" | "file" | "comment";
 
 const HEADER_HEIGHT = 7;
 const FOOTER_HEIGHT = 3;
@@ -35,6 +36,7 @@ export default function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [termRows, setTermRows] = useState(process.stdout.rows ?? 24);
   const [termCols, setTermCols] = useState(process.stdout.columns ?? 80);
+  const [commentLine, setCommentLine] = useState(0);
 
   const visibleLines = Math.max(5, termRows - HEADER_HEIGHT - FOOTER_HEIGHT);
 
@@ -123,6 +125,12 @@ export default function App() {
         setScrollOffset(0);
       }
     },
+    onComment: () => {
+      if (screen === "diff") {
+        setCommentLine(scrollOffset + 1);
+        setScreen("comment");
+      }
+    },
     onBack: () => {
       if (screen === "diff") {
         setScreen("list");
@@ -133,6 +141,7 @@ export default function App() {
         setFileScrollOffset(0);
       }
       if (screen === "review") setScreen("list");
+      if (screen === "comment") setScreen("diff");
     },
     onApprove: () => {
       if (screen === "list" || screen === "diff") {
@@ -290,7 +299,19 @@ export default function App() {
           flexDirection="column"
           overflow="hidden"
         >
-          {screen === "review" ? (
+          {screen === "comment" ? (
+            <CommentInput
+              token={token}
+              owner={repo?.owner ?? ""}
+              repo={repo?.repo ?? ""}
+              prNumber={selectedPR?.number ?? 0}
+              commitId={selectedPR?.head.sha ?? ""}
+              path={currentFile?.filename ?? ""}
+              line={commentLine}
+              onSuccess={() => setScreen("diff")}
+              onCancel={() => setScreen("diff")}
+            />
+          ) : screen === "review" ? (
             <ReviewScreen
               token={token}
               owner={repo?.owner ?? ""}
@@ -329,7 +350,7 @@ export default function App() {
       <Box borderStyle="single" borderColor="gray" paddingX={1}>
         <Text color="gray">
           {screen === "diff"
-            ? "[↑↓] scroll  [←→/jk] switch files  [v] view file  [esc] back  [a] approve  [r] reject  [q] quit"
+            ? "[↑↓] scroll  [←→/jk] switch files  [v] view file  [c] comment  [esc] back  [a] approve  [r] reject  [q] quit"
             : screen === "file"
             ? "[↑↓] scroll  [v] back to diff  [esc] back  [q] quit"
             : "[↑↓] navigate  [enter] open  [a] approve  [r] reject  [q] quit"}

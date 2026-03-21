@@ -9,7 +9,7 @@ export interface PR {
   body: string | null;
   user: GithubUser;
   created_at: string;
-  head: { ref: string };
+  head: { ref: string; sha: string };
   base: { ref: string };
   draft: boolean;
   changed_files?: number;
