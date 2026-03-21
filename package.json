@@ -1,5 +1,5 @@
 {
-  "name": "@grimmy-dev/prview",
+  "name": "prview-cli",
   "version": "0.1.0",
   "description": "terminal UI for reviewing GitHub PRs without leaving your terminal",
   "module": "src/index.tsx",
